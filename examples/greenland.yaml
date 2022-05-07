@@ -1,0 +1,15 @@
+greenland500:
+  description: Greenland
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: 90.0
+    lon_0: -45.0
+    lat_ts: 70.0
+  shape:
+    height: 5370
+    width: 2970
+  area_extent:
+    lower_left_xy: [-636000.000, -3351000.000]
+    upper_right_xy: [ 849000.000, -666000.000]
+ 
