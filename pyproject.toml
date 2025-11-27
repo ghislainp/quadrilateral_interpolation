@@ -43,6 +43,10 @@ extend-exclude = ["attic"]
 
 [tool.setuptools_scm]
 
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = { find = { where = ["src"], include = ["quadrilateral_interpolation*"] } }
+
 [tool.pixi.workspace]
 channels = ["conda-forge"]
 platforms = ["linux-64"]
