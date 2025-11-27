@@ -17,10 +17,10 @@ but can be used as a standalone projection tool as long as the basic grid defini
 
 # Installation
 
-Install with pip the master version.
+Install with pip:
 
 ```
-pip install git+https://github.com/ghislainp/quadrilateral_interpolation.git
+pip install quadrilateral_interpolation
 ```
 
 # Example

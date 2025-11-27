@@ -4,12 +4,12 @@
 This code provides a fast quadrilateral interpolation to perform satellite image projection from swath geometry to any
 geographical projection.
 
-The method and the code implementation are intent to be very fast but may not be as accurate as other backward interpolations (bilinear, ...). 
+The method and the code implementation are intent to be very fast but may not be as accurate as other backward interpolation methods (bilinear, ...). 
 It is suitable for coarse resolution imagery. The calculation is based on:
 [Interpolation using an arbitrary quadrilateral](https://www.particleincell.com/2012/quad-interpolation/)
 
-The API follows the conventions in [xESMF](https://github.com/pangeo-data/xESMF) for the Resampler object and 
-in [pyresample](https://github.com/pytroll/pyresample) for the grid definition. See pyresample for useful tools
+The API follows the conventions of [xESMF](https://github.com/pangeo-data/xESMF) for the Resampler object and 
+of [pyresample](https://github.com/pytroll/pyresample) for the grid definition. See pyresample for useful tools
  to create and manipulate grids.
 
 This package was designed to work for satellite images opened with [satpy](https://github.com/pytroll/satpy) 
@@ -103,18 +103,22 @@ class QuadInterpolationResampler:
 def alpha_beta(p00, p01, p10, p11):
     # quad interpolation: https://www.particleincell.com/2012/quad-interpolation/
 
-    x = [p00[0], p01[0], p11[0], p10[0]]
-    y = [p00[1], p01[1], p11[1], p10[1]]
+    x = p00[0], p01[0], p11[0], p10[0]
+    y = p00[1], p01[1], p11[1], p10[1]
 
-    alpha = [x[0],
-             - x[0] + x[1],
-             - x[0] + x[3],
-             x[0] - x[1] + x[2] - x[3]]
+    alpha = (
+        x[0],
+        - x[0] + x[1],
+        - x[0] + x[3],
+        x[0] - x[1] + x[2] - x[3]
+    )
 
-    beta = [y[0],
-            - y[0] + y[1],
-            - y[0] + y[3],
-            y[0] - y[1] + y[2] - y[3]]
+    beta = (
+        y[0],
+        - y[0] + y[1],
+        - y[0] + y[3],
+        y[0] - y[1] + y[2] - y[3]
+    )
 
     return alpha, beta
 
@@ -139,6 +143,8 @@ def XtoL(x, y, alpha, beta):
             return -1, -1  # same as outside...
         det = math.sqrt(discr)
         m = (-bb + det) / (2 * aa)
+        if (m < 0) or (m > 1):  # depend on the order of the grid points
+            m = (-bb - det) / (2 * aa)
 
     # compute l
     denom = (alpha[1] + alpha[3] * m)
@@ -211,9 +217,11 @@ def regrid_quadinterpolation_compiled_rank2(data, X, Y, center_pixel_upper_left,
                         # outside!
                         continue
                     # perform the interpolation
-                    regridded[..., iy, ix] += (1 - l) * ((1 - m) * data[i, j] + m * data[i + 1, j]) + \
+                    r = (1 - l) * ((1 - m) * data[i, j] + m * data[i + 1, j]) + \
                         l * ((1 - m) * data[i, j + 1] + m * data[i + 1, j + 1])
-                    count[iy, ix] += 1
+                    if np.isfinite(r):
+                        regridded[..., iy, ix] += r
+                        count[iy, ix] += 1
 
     return regridded / count
 

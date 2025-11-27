@@ -1,19 +1,57 @@
-[tool.poetry]
+[project]
 name = "quadrilateral_interpolation"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Fast projection of satellite images using forward quadrilateral interpolation"
 authors = ["Ghislain Picard <ghislain.picard@univ-grenoble-alpes.fr>"]
-license = "LGPL"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.9"
-xarray = ">=2022.3.0"
-numba = ">=0.55.1"
-numpy = ">=1.22.3"
-pyproj = ">=3.3.1"
 
-[tool.poetry.dev-dependencies]
+dependencies = [
+    "numpy>=2,<3",
+    "pandas>=2,<3",
+    "scipy>=1,<2",
+    "numba>=0.58,<1",
+    "pyproj = >=3.3.1"
+    "xarray = >=2022.3.0"
+]
+
+[dependency-groups]
+dev = ["pytest", "ruff", "pre-commit"]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools >= 62",
+            "setuptools_scm[toml] >= 6.2",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ['quadrilateral_interpolation']
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+lint.ignore = ["E741"]
+lint.pydocstyle.convention = "google"
+extend-exclude = ["attic"]
+
+[tool.setuptools_scm]
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.pypi-dependencies]
+quadrilateral_interpolation = { path = ".", editable = true }
+
+[tool.pixi.environments]
+default = { solve-group = "default" }
+dev = { features = ["dev"], solve-group = "default" }
+
+[tool.pixi.tasks]
