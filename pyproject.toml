@@ -2,7 +2,9 @@
 name = "quadrilateral_interpolation"
 dynamic = ["version"]
 description = "Fast projection of satellite images using forward quadrilateral interpolation"
-authors = ["Ghislain Picard <ghislain.picard@univ-grenoble-alpes.fr>"]
+authors = [
+        {name = "Ghislain Picard", email = "ghislain.picard@univ-grenoble-alpes.fr"},
+        ]
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.10"
@@ -18,8 +20,8 @@ dependencies = [
     "pandas>=2,<3",
     "scipy>=1,<2",
     "numba>=0.58,<1",
-    "pyproj = >=3.3.1"
-    "xarray = >=2022.3.0"
+    "pyproj>=3.3.1",
+    "xarray>=2022.3.0"
 ]
 
 [dependency-groups]
@@ -31,8 +33,6 @@ requires = ["setuptools >= 62",
 ]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ['quadrilateral_interpolation']
 
 [tool.ruff]
 line-length = 120
